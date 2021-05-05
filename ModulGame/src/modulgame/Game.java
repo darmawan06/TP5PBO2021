@@ -10,10 +10,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
-import java.io.IOException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 
 /**
@@ -119,7 +116,7 @@ public class Game extends Canvas implements Runnable{
                         System.out.println(TotalTime);
                     }else{
                         dbConnection dbcon = new dbConnection();
-                        dbcon.insertScore(username, score + TotalTime);
+                        dbcon.insertScore(username, score + TotalTime, TotalTime);
                         gameState = STATE.GameOver;
                     }
                 }
@@ -149,7 +146,7 @@ public class Game extends Canvas implements Runnable{
                         if(checkCollision(playerObject, handler.object.get(i))){
                             handler.removeObject(playerObject);
                             dbConnection dbcon = new dbConnection();
-                            dbcon.insertScore(username, score);
+                            dbcon.insertScore(username, score + TotalTime, TotalTime);
                             gameState = STATE.GameOver;
                             break;
                         }
@@ -157,7 +154,7 @@ public class Game extends Canvas implements Runnable{
                             if(checkCollision(player2Object, handler.object.get(i))){
                                 handler.removeObject(player2Object);
                                 dbConnection dbcon = new dbConnection();
-                                dbcon.insertScore(username, score);
+                                dbcon.insertScore(username, score + TotalTime, TotalTime);
                                 gameState = STATE.GameOver;
                                 break;
                             }

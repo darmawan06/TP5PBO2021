@@ -39,17 +39,19 @@ public class dbConnection {
         
         DefaultTableModel dataTabel = null;
         try{
-            Object[] column = {"No", "Username", "Score"};
+            Object[] column = {"No", "Username", "Score", "Time"};
             connect();
             dataTabel = new DefaultTableModel(null, column);
             String sql = "Select * from highscore order by Score DESC";
             ResultSet res = stm.executeQuery(sql);
             int no = 1;
             while(res.next()){
-                Object[] hasil = new Object[3];
+                Object[] hasil = new Object[4];
                 hasil[0] = no;
                 hasil[1] = res.getString("Username");
                 hasil[2] = res.getString("Score");
+                hasil[3] = res.getString("Time");
+
                 no++;
                 dataTabel.addRow(hasil);
             }
@@ -61,7 +63,7 @@ public class dbConnection {
     }
    
     
-    public void insertScore(String username,int score){
+    public void insertScore(String username,int score, int time){
         connect();
         String sql = "Select * from highscore";
         PreparedStatement PreparedStmt = null;
@@ -72,10 +74,11 @@ public class dbConnection {
                 if(res.getString("Username").equals(username)){
                        checkUsername = 1;
                     if(score > res.getInt("Score")){
-                       sql = "UPDATE `highscore` SET `Score` = ? WHERE `highscore`.`Username` = ?; ";
+                       sql = "UPDATE `highscore` SET `Score` = ?, `Time` = ? WHERE `highscore`.`Username` = ? ";
                        PreparedStmt = con.prepareStatement(sql);
-                       PreparedStmt.setInt(1,score);
-                       PreparedStmt.setString(2,username);
+                       PreparedStmt.setInt(1,score);                       
+                       PreparedStmt.setInt(2,time);
+                       PreparedStmt.setString(3,username);
                        PreparedStmt.executeUpdate();
                        break;
                     }else{
@@ -84,10 +87,11 @@ public class dbConnection {
                 }
             }
             if(checkUsername == 0){
-                sql = "INSERT INTO `highscore` (`id`, `Username`, `Score`) VALUES (NULL, ?, ?)";
+                sql = "INSERT INTO `highscore` (`id`, `Username`, `Score`, `Time`) VALUES (NULL, ?, ?, ?)";
                 PreparedStmt = con.prepareStatement(sql);
                 PreparedStmt.setString(1,username);
                 PreparedStmt.setInt(2,score);
+                PreparedStmt.setInt(3,time);
                 PreparedStmt.executeUpdate();
             }
         }catch(Exception e){
